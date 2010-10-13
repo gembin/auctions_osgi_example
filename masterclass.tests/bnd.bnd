@@ -1,0 +1,11 @@
+Private-Package: org.example.tests
+Test-Suites: org.example.tests.OSGiTest
+-runfw: org.apache.felix.framework
+-runbundles: masterclass.service;version=snapshot,\
+	masterclass.api;version=snapshot,\
+	org.apache.felix.scr,\
+	osgi.cmpn
+-buildpath: bndtools.runtime.junit;version=latest,\
+	masterclass.api;version=latest,\
+	osgi.core;version=latest,\
+	junit.osgi;version=latest

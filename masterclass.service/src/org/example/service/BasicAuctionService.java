@@ -24,20 +24,31 @@ import org.example.api.AuctionService;
 import org.example.api.Bid;
 import org.example.api.InvalidBidException;
 
+import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.ConfigurationPolicy;
+import aQute.bnd.annotation.component.Modified;
 
 @Component
 public class BasicAuctionService implements AuctionService {
-	
-	final AtomicLong itemCounter = new AtomicLong(0);
-	final Map<Long, AuctionItem> itemMap = new ConcurrentHashMap<Long, AuctionItem>();
-	final Map<Long, SortedSet<Bid>> itemBidMap = new HashMap<Long, SortedSet<Bid>>();
-	final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-	
-	public BasicAuctionService() {
-		loadInitialData();
+
+	private int numberOfItems = 1;
+	private final AtomicLong itemCounter = new AtomicLong(0);
+	private final Map<Long, AuctionItem> itemMap = new ConcurrentHashMap<Long, AuctionItem>();
+	private final Map<Long, SortedSet<Bid>> itemBidMap = new HashMap<Long, SortedSet<Bid>>();
+	private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+	@Activate
+	protected void activate(Map<String, Object> properties) {
+		String prop = (String) properties.get("numberOfItems");
+		if (prop != null) {
+			numberOfItems = Integer.parseInt(prop);
+		}
+		for (int i = 1; i <= numberOfItems; i++) {
+			loadInitialData();
+		}
 	}
-	
+
 	private void loadInitialData() {
 		URL url = getClass().getResource("items.csv");
 		if (url != null) {
@@ -47,10 +58,11 @@ public class BasicAuctionService implements AuctionService {
 				InputStreamReader reader = new InputStreamReader(stream);
 				CSVParser parser = new CSVParser(reader);
 				String[] line;
-				while((line = parser.getLine()) != null) {
+				while ((line = parser.getLine()) != null) {
 					if (line.length >= 3) {
 						long startPrice = Long.parseLong(line[1]);
-						AuctionItem item = new AuctionItem(itemCounter.getAndIncrement(), line[0], startPrice, dateFormat.parse(line[2]));
+						AuctionItem item = new AuctionItem(itemCounter.getAndIncrement(), line[0], startPrice,
+								dateFormat.parse(line[2]));
 						itemMap.put(item.getId(), item);
 						bid(item, startPrice + 1, "user");
 					}
@@ -58,46 +70,50 @@ public class BasicAuctionService implements AuctionService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				try { if (stream != null) stream.close(); } catch (IOException e) {}
+				try {
+					if (stream != null)
+						stream.close();
+				} catch (IOException e) {
+				}
 			}
 		}
 	}
-	
+
 	@Override
 	public AuctionItem createItemListing(String description, long startPrice, Date expiry) {
 		long id = itemCounter.getAndIncrement();
-		
+
 		AuctionItem item = new AuctionItem(id, description, startPrice, expiry);
 		itemMap.put(id, item);
-		
+
 		return item;
 	}
-	
+
 	@Override
 	public Collection<AuctionItem> listItems() {
 		List<AuctionItem> list = new ArrayList<AuctionItem>(itemMap.size());
 		list.addAll(itemMap.values());
 		return list;
 	}
-	
+
 	@Override
 	public synchronized Bid bid(AuctionItem item, long price, String user) throws InvalidBidException {
 		if (price <= item.getStartPrice())
 			throw new InvalidBidException(item, price);
-		
+
 		Bid bid = new Bid(item, price, user, new Date());
-		
+
 		synchronized (itemBidMap) {
 			SortedSet<Bid> bidSet = itemBidMap.get(item.getId());
-			if(bidSet == null) {
+			if (bidSet == null) {
 				bidSet = new TreeSet<Bid>(new BidPriceComparator(false));
 				itemBidMap.put(item.getId(), bidSet);
 			}
-			if(!bidSet.isEmpty() && price <= bidSet.first().getPrice())
+			if (!bidSet.isEmpty() && price <= bidSet.first().getPrice())
 				throw new InvalidBidException(item, price);
 			bidSet.add(bid);
 		}
-		
+
 		return bid;
 	}
 
@@ -106,7 +122,7 @@ public class BasicAuctionService implements AuctionService {
 		Collection<Bid> result = Collections.emptyList();
 		synchronized (itemBidMap) {
 			Collection<Bid> temp = itemBidMap.get(item.getId());
-			if(temp != null) {
+			if (temp != null) {
 				result = new ArrayList<Bid>(temp.size());
 				result.addAll(temp);
 			}

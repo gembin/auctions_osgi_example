@@ -25,7 +25,7 @@ public class BasicAuctionServiceTest extends TestCase {
 		
 		Collection<AuctionItem> items = auction.listItems();
 		assertFalse(items.isEmpty());
-		assertEquals("Fly Fishing by J.R. Hartley (1st Edition)", items.iterator().next().getDescription());
+		assertEquals("Fly Fishing by J.R. Hartley (first edition)", items.iterator().next().getDescription());
 	}
 	
 	public void testBidding() throws InvalidBidException {
