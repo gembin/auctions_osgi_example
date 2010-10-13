@@ -29,7 +29,7 @@ import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.ConfigurationPolicy;
 import aQute.bnd.annotation.component.Modified;
 
-@Component
+@Component(configurationPolicy = ConfigurationPolicy.require)
 public class BasicAuctionService implements AuctionService {
 
 	private int numberOfItems = 1;
@@ -40,9 +40,13 @@ public class BasicAuctionService implements AuctionService {
 
 	@Activate
 	protected void activate(Map<String, Object> properties) {
-		String prop = (String) properties.get("numberOfItems");
+		Object prop = properties.get("numberOfItems");
 		if (prop != null) {
-			numberOfItems = Integer.parseInt(prop);
+			if (prop instanceof Integer) {
+				numberOfItems = (Integer) prop;
+			} else {
+				numberOfItems = Integer.parseInt((String) prop);
+			}
 		}
 		for (int i = 1; i <= numberOfItems; i++) {
 			loadInitialData();

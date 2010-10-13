@@ -10,4 +10,5 @@
 	masterclass.service;version=latest,\
 	org.apache.felix.webconsole;version=latest,\
 	org.apache.felix.fileinstall,\
-	org.apache.felix.configadmin
+	org.apache.felix.configadmin,\
+	org.apache.felix.metatype

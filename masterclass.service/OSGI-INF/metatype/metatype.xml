@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
+  
+  <OCD description="Configure auctions here" 
+       name="Auction configuration"
+       id="org.example.service.BasicAuctionService">
+       
+    <AD name="Number of items"  id="numberOfItems" required="true" type="Integer" default="1"/>
+    <AD name="Label"  id="label" required="true" type="String"/>
+  </OCD>
+  
+    <Designate factoryPid="org.example.service.BasicAuctionService" pid="org.example.service.BasicAuctionService">
+        <Object ocdref="org.example.service.BasicAuctionService"/>
+    </Designate>
+  
+</metatype:MetaData>
