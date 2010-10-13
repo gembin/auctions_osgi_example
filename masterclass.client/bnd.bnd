@@ -1,0 +1,5 @@
+-buildpath: masterclass.api;version=snapshot,\
+	aQute.vaadin.core,\
+	osgi.cmpn,\
+	biz.aQute.bnd.annotation
+-sub: *.bnd
