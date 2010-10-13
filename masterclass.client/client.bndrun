@@ -1,8 +1,11 @@
 -runfw: org.apache.felix.framework
 
 -runbundles: masterclass.api;version=snapshot,\
-	aQute.vaadin.core;version=snapshot,\
+	aQute.vaadin.core,\
 	osgi.cmpn,\
 	org.apache.felix.http.jetty,\
 	org.apache.felix.shell,\
-	org.apache.felix.shell.tui
+	org.apache.felix.shell.tui,\
+	org.apache.felix.scr;version=latest,\
+	masterclass.service;version=latest,\
+	org.apache.felix.webconsole

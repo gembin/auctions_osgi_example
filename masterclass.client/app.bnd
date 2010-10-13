@@ -1,1 +1,3 @@
-Private-Package: org.example.client
+Private-Package: org.example.client,\
+	org.example.demo
+Service-Component: *

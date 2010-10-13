@@ -3,3 +3,4 @@
 	junit.osgi
 Private-Package: org.example.service
 Conditional-Package: org.apache.commons.csv 
+Service-Component: *

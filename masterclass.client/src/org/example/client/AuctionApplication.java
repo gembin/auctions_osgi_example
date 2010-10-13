@@ -6,6 +6,7 @@ import org.example.api.AuctionItem;
 import org.example.api.AuctionService;
 import org.example.api.Bid;
 
+import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.Reference;
 
 import com.vaadin.Application;
@@ -27,6 +28,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+@Component(factory="com.vaadin.Application/")
 public class AuctionApplication extends Application {
 	
 	private static final long serialVersionUID = 1L;
@@ -168,6 +170,7 @@ public class AuctionApplication extends Application {
 		}
 	}
 
+	@Reference(type = '*')
 	protected void addAuctionService(AuctionService auction, Map<String, Object> properties) {
 		String label = "UNKNOWN";
 		

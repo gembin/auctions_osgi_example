@@ -24,6 +24,9 @@ import org.example.api.AuctionService;
 import org.example.api.Bid;
 import org.example.api.InvalidBidException;
 
+import aQute.bnd.annotation.component.Component;
+
+@Component
 public class BasicAuctionService implements AuctionService {
 	
 	final AtomicLong itemCounter = new AtomicLong(0);
